@@ -1,23 +1,3 @@
-# rails4 specific
-if Gem.loaded_specs["activesupport"].version.to_s =~ /^4/
-  require 'active_record'
-  require 'active_record/session_store'
-
-  # wrapper around ActionDispatch::Session::ActiveRecordStore
-  # as ActiveRecord::SessionStore.session_class doesn't exist in rails4
-  module ActiveRecord
-    module SessionStore
-      def self.session_class
-        ActionDispatch::Session::ActiveRecordStore.session_class
-      end
-
-      def self.session_class=(klass)
-        ActionDispatch::Session::ActiveRecordStore.session_class = klass
-      end
-    end
-  end
-end
-
 module CASClient
   module Tickets
     module Storage
@@ -37,7 +17,7 @@ module CASClient
           if config[:pgtious_table_name]
             CasPgtiou.set_table_name = config[:pgtious_table_name]
           end
-          ActiveRecord::SessionStore.session_class = ServiceTicketAwareSession
+          ActionDispatch::Session::ActiveRecordStore.session_class = ServiceTicketAwareSession
         end
 
         def store_service_session_lookup(st, controller)
